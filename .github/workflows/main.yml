@@ -188,7 +188,7 @@ jobs:
         qmake rdm.pro CONFIG-=debug
         make -s -j 8
         cd ../bin/osx/release
-        macdeployqt ./Redis\ Desktop\ Manager.app -dmg
+        macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -dmg
     
     - name: Upload Release Asset
       id: upload-release-asset 
