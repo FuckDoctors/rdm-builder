@@ -21,6 +21,7 @@ on:
 env:
   RDM_REF: 2020.1
   VERSION: 2020.1.0
+  PYTHON_EMBEDDED_VERSION: 3.7.8
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -105,7 +106,9 @@ jobs:
 
     # pip install
     - name: pip install
-      run: pip3 install -r rdm/src/py/requirements.txt
+      shell: cmd
+      run: |
+        pip3 install -r rdm/src/py/requirements.txt
 
     # Runs a single command using the runners shell
     - name: build
@@ -113,13 +116,24 @@ jobs:
       env:
         vc_arch: ${{ matrix.msvc_arch }}
       run: |
+        python rdm\build\utils\set_version.py ${{ env.VERSION }} > rdm\src\version.h
         cd rdm\src
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
         qmake rdm.pro
         nmake
 
-    # windeployqt.exe --release --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
-    # 缺少python37.dll    
+    # 缺少python37.dll
+    - name: add python37.dll
+      shell: powershell
+      env:
+        PYTHON_EMBEDDED_VERSION: ${{ env.PYTHON_EMBEDDED_VERSION }}
+      run: |
+        cd rdm\build\windows\installer\resources
+        (New-Object System.Net.WebClient).DownloadFile('https://www.python.org/ftp/python/%PYTHON_EMBEDDED_VERSION%/python-%PYTHON_EMBEDDED_VERSION%-embed-amd64.zip', 'python-embed.zip')
+        7z.exe x python-embed.zip python37.zip python3.dll python37.dll
+        del python-embed.zip
+
+    # windeployqt.exe -- --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
     - name: package
       id: pacage
       shell: cmd
@@ -128,8 +142,6 @@ jobs:
         copy /y bin\windows\release\rdm.exe build\windows\installer\resources\rdm.exe
         copy /y bin\windows\release\rdm.exp build\windows\installer\resources\rdm.exp
         copy /y bin\windows\release\rdm.lib build\windows\installer\resources\rdm.lib
-        copy /y C:\Python37-x64\python3.dll build\windows\installer\resources\python3.dll
-        copy /y C:\Python37-x64\python37.dll build\windows\installer\resources\python37.dll
         cd build\windows\installer\resources
         windeployqt.exe --release --force --qmldir ../../../../src/qml rdm.exe
         makensis.exe /V1 /DVERSION=${{ env.VERSION }} ../installer.nsi
@@ -181,13 +193,14 @@ jobs:
       run: |
         cd rdm
         mkdir -p bin/osx/release && cd bin/osx/release
-        pip3 install -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt --user
+        sudo pip3 install --prefix . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
 
     # brew install tree && tree -a
     # 去掉initUpdater不然报Please download new version of Redis Desktop Manager，不能使用
     - name: build and package
       id: build_and_package
       run: |
+        python ./rdm/build/utils/set_version.py ${{ env.VERSION }} > ./rdm/src/version.h
         cd rdm/src
         sed -i '.back' 's/initUpdater();/\/\/initUpdater();/g' ./app/app.cpp
         qmake rdm.pro CONFIG-=debug
