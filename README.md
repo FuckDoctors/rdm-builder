@@ -10,6 +10,11 @@ Official Download: [https://redisdesktop.com](https://redisdesktop.com/)
 
 有条件的同学请支持官方版本: [https://redisdesktop.com](https://redisdesktop.com/)
 
+其他版本：
+
+- [RedisDesktopManager-Windows](https://github.com/lework/RedisDesktopManager-Windows)
+- [RedisDesktopManager-Mac](https://github.com/onewe/RedisDesktopManager-Mac)
+
 ## Release
 
 - [windows](https://github.com/FuckDoctors/rdm-builder/releases)
