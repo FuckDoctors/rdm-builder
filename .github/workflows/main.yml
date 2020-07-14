@@ -125,11 +125,11 @@ jobs:
     # 缺少python37.dll
     - name: add python37.dll
       shell: powershell
-      env:
-        PYTHON_EMBEDDED_VERSION: ${{ env.PYTHON_EMBEDDED_VERSION }}
+#      env:
+#        PYTHON_EMBEDDED_VERSION: ${{ env.PYTHON_EMBEDDED_VERSION }}
       run: |
         cd rdm\build\windows\installer\resources
-        (New-Object System.Net.WebClient).DownloadFile('https://www.python.org/ftp/python/%PYTHON_EMBEDDED_VERSION%/python-%PYTHON_EMBEDDED_VERSION%-embed-amd64.zip', 'python-embed.zip')
+        (New-Object System.Net.WebClient).DownloadFile('https://www.python.org/ftp/python/${{ env.PYTHON_EMBEDDED_VERSION }}/python-${{ env.PYTHON_EMBEDDED_VERSION }}-embed-amd64.zip', 'python-embed.zip')
         7z.exe x python-embed.zip python37.zip python3.dll python37.dll
         del python-embed.zip
 
