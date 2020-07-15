@@ -8,12 +8,12 @@ name: CI for redis desktop manager
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [ debug ]
     paths-ignore: 
       - 'README.md'
       - 'LICENSE'
   pull_request:
-    branches: [ master ]
+    branches: [ debug ]
     paths-ignore: 
       - 'README.md'
       - 'LICENSE'
@@ -43,12 +43,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ env.RDM_REF }}
-          release_name: v${{ env.RDM_REF }}
+          tag_name: ${{ env.RDM_REF }}-debug
+          release_name: v${{ env.RDM_REF }}-debug
           body: |
-            ${{ env.RDM_REF }}
-          draft: false
-          prerelease: false
+            ${{ env.RDM_REF }}-debug
+          draft: true
+          prerelease: true
 
   build_on_windows:
     needs: create_release
@@ -73,7 +73,7 @@ jobs:
         repository: uglide/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
-        ref: ${{ env.RDM_REF }}
+#         ref: ${{ env.RDM_REF }}
 
     # install QT   
     - name: install QT
@@ -108,7 +108,11 @@ jobs:
     - name: pip install
       shell: cmd
       run: |
-        pip3 install -r rdm/src/py/requirements.txt
+        cd rdm\build\windows\installer\resources
+        xcopy %GITHUB_WORKSPACE%\rdm\src\py . /s /i
+        pip3 install -t . -r requirements.txt
+        python -m compileall -b .
+        del /s /q *.py
 
     # Runs a single command using the runners shell
     - name: build
@@ -189,20 +193,25 @@ jobs:
     # https://github.com/pypa/pip/issues/4390
     # https://github.com/pypa/pip/issues/4139
     # https://github.com/pypa/pip/issues/562
+    # sudo pip3 install --prefix . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
     - name: pip install
       run: |
         cd rdm
         mkdir -p bin/osx/release && cd bin/osx/release
-        sudo pip3 install --prefix . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
+        cp -rf %GITHUB_WORKSPACE%/rdm/src/py/* .
+        sudo pip3 install -t . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
+        python -m compileall -b .
+        find . -name "*.py"  | xargs rm -rf
+        find . -name "__pycache__"  | xargs rm -rf
 
     # brew install tree && tree -a
     # 去掉initUpdater不然报Please download new version of Redis Desktop Manager，不能使用
+    # sed -i '.back' 's/initUpdater();/\/\/initUpdater();/g' ./app/app.cpp
     - name: build and package
       id: build_and_package
       run: |
         python ./rdm/build/utils/set_version.py ${{ env.VERSION }} > ./rdm/src/version.h
         cd rdm/src
-        sed -i '.back' 's/initUpdater();/\/\/initUpdater();/g' ./app/app.cpp
         qmake rdm.pro CONFIG-=debug
         make -s -j 8
         cd ../bin/osx/release
