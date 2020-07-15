@@ -137,7 +137,7 @@ jobs:
         7z.exe x python-embed.zip python37.zip python3.dll python37.dll
         del python-embed.zip
 
-    # windeployqt.exe -- --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
+    # windeployqt.exe --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
     - name: package
       id: pacage
       shell: cmd
@@ -203,6 +203,7 @@ jobs:
         python -m compileall -b .
         find . -name "*.py"  | xargs rm -rf
         find . -name "__pycache__"  | xargs rm -rf
+        brew install tree && tree -a
 
     # brew install tree && tree -a
     # 去掉initUpdater不然报Please download new version of Redis Desktop Manager，不能使用
