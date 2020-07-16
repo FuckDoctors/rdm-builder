@@ -106,14 +106,20 @@ jobs:
       run: mklink /d C:\Python37-x64 C:\hostedtoolcache\windows\python\3.7.8\x64
 
     # pip install
+    # pip3 install -t . -r requirements.txt
+    # -t .会把所有的python依赖下载到当前目录，显得太乱
     - name: pip install
       shell: cmd
       run: |
         cd rdm\build\windows\installer\resources
         xcopy %GITHUB_WORKSPACE%\rdm\src\py . /s /i
-        pip3 install -t . -r requirements.txt
+        pip3 install --prefix . -r requirements.txt
+        cd Lib/site-packages
         python -m compileall -b .
         del /s /q *.py
+        forfiles /p "." /s /m __pycache__ /c "cmd /c if @isdir==true rd /s /q @file 2>nul" 2>nul | exit /b 0
+        forfiles /p "." /s /m *.dist-info /c "cmd /c if @isdir==true rd /s /q @file 2>nul" 2>nul | exit /b 0
+        forfiles /p "." /s /m *.egg-info /c "cmd /c if @isdir==true rd /s /q @file 2>nul" 2>nul | exit /b 0
 
     # Runs a single command using the runners shell
     - name: build
@@ -148,7 +154,7 @@ jobs:
         copy /y bin\windows\release\rdm.exp build\windows\installer\resources\rdm.exp
         copy /y bin\windows\release\rdm.lib build\windows\installer\resources\rdm.lib
         cd build\windows\installer\resources
-        windeployqt.exe --release --force --qmldir ../../../../src/qml rdm.exe
+        windeployqt.exe --no-angle --no-opengl-sw --no-compiler-runtime --no-translations --release --force --qmldir ../../../../src/qml rdm.exe
         makensis.exe /V1 /DVERSION=${{ env.VERSION }} ../installer.nsi
 
     - name: Upload Release Asset
@@ -202,7 +208,8 @@ jobs:
         mkdir -p bin/osx/release && cd bin/osx/release
         cp -Rf $GITHUB_WORKSPACE/rdm/src/py/ .
         sudo pip3 install -t . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
-        python -m compileall -b .
+        which python
+        python3 -m compileall -b .
         find . -name "*.py"  | xargs rm -rf
         find . -name "__pycache__"  | xargs rm -rf
         brew install tree && tree -a
