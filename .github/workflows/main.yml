@@ -211,8 +211,8 @@ jobs:
         sudo pip3 install -t . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
         which python
         sudo python3 -m compileall -b .
-        sudo find . -name "*.py"  | xargs rm -rf
-        sudo find . -name "__pycache__"  | xargs rm -rf
+        sudo find . -name "*.py" | sudo xargs rm -rf
+        sudo find . -name "__pycache__" | sudo xargs rm -rf
         brew install tree && tree -a
 
     # brew install tree && tree -a
