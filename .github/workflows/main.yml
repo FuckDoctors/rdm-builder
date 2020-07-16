@@ -120,6 +120,7 @@ jobs:
         forfiles /p "." /s /m __pycache__ /c "cmd /c if @isdir==true rd /s /q @file 2>nul" 2>nul | exit /b 0
         forfiles /p "." /s /m *.dist-info /c "cmd /c if @isdir==true rd /s /q @file 2>nul" 2>nul | exit /b 0
         forfiles /p "." /s /m *.egg-info /c "cmd /c if @isdir==true rd /s /q @file 2>nul" 2>nul | exit /b 0
+        tree /f ../..
 
     # Runs a single command using the runners shell
     - name: build
@@ -209,7 +210,7 @@ jobs:
         cp -Rf $GITHUB_WORKSPACE/rdm/src/py/ .
         sudo pip3 install -t . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
         which python
-        python3 -m compileall -b .
+        sudo python3 -m compileall -b .
         find . -name "*.py"  | xargs rm -rf
         find . -name "__pycache__"  | xargs rm -rf
         brew install tree && tree -a
