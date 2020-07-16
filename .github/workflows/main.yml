@@ -213,7 +213,8 @@ jobs:
         sudo python3 -m compileall -b .
         sudo find . -name "*.py" | sudo xargs rm -rf
         sudo find . -name "__pycache__" | sudo xargs rm -rf
-        brew install tree && tree -a
+        sudo find . -name "*.dist-info" | sudo xargs rm -rf
+        sudo find . -name "*.egg-info" | sudo xargs rm -rf
 
     # brew install tree && tree -a
     # 去掉initUpdater不然报Please download new version of Redis Desktop Manager，不能使用
@@ -226,7 +227,8 @@ jobs:
         qmake rdm.pro CONFIG-=debug
         make -s -j 8
         cd ../bin/osx/release
-        macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -dmg
+        brew install tree && tree -L 3
+        macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -always-overwrite -dmg
     
     - name: Upload Release Asset
       id: upload-release-asset 
