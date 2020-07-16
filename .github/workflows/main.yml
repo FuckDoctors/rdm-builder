@@ -74,6 +74,7 @@ jobs:
         path: rdm
         submodules: 'recursive'
 #         ref: ${{ env.RDM_REF }}
+        ref: 2020
 
     # install QT   
     - name: install QT
@@ -174,7 +175,8 @@ jobs:
         repository: uglide/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
-        ref: ${{ env.RDM_REF }}
+#         ref: ${{ env.RDM_REF }}
+        ref: 2020
 
     # install QT   
     - name: install QT
@@ -198,7 +200,7 @@ jobs:
       run: |
         cd rdm
         mkdir -p bin/osx/release && cd bin/osx/release
-        cp -rf %GITHUB_WORKSPACE%/rdm/src/py/* .
+        cp -Rf %GITHUB_WORKSPACE%/rdm/src/py/ .
         sudo pip3 install -t . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
         python -m compileall -b .
         find . -name "*.py"  | xargs rm -rf
