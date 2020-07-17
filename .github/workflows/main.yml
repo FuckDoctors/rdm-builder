@@ -119,7 +119,7 @@ jobs:
         forfiles /p "." /s /m __pycache__ /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
         forfiles /p "." /s /m *.dist-info /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
         forfiles /p "." /s /m *.egg-info /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
-        tree /f ../..
+        tree /f /a ../..
 
     # Runs a single command using the runners shell
     - name: build
@@ -130,7 +130,7 @@ jobs:
         python rdm\build\utils\set_version.py ${{ env.VERSION }} > rdm\src\version.h
         cd rdm\src
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
-        qmake rdm.pro
+        qmake rdm.pro CONFIG-=debug
         nmake
 
     # 缺少python37.dll
@@ -144,6 +144,8 @@ jobs:
         7z.exe x python-embed.zip python37.zip python3.dll python37.dll
         del python-embed.zip
 
+    # windeployqt
+    # https://doc.qt.io/qt-5/windows-deployment.html
     # windeployqt.exe --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
     - name: package
       id: pacage
@@ -154,7 +156,7 @@ jobs:
         copy /y bin\windows\release\rdm.exp build\windows\installer\resources\rdm.exp
         copy /y bin\windows\release\rdm.lib build\windows\installer\resources\rdm.lib
         cd build\windows\installer\resources
-        windeployqt.exe --no-angle --no-opengl-sw --no-compiler-runtime --no-translations --release --force --qmldir ../../../../src/qml rdm.exe
+        windeployqt.exe --no-angle --no-opengl-sw --no-compiler-runtime --release --force --qmldir ../../../../src/qml rdm.exe
         makensis.exe /V1 /DVERSION=${{ env.VERSION }} ../installer.nsi
 
     - name: Upload Release Asset
@@ -220,6 +222,8 @@ jobs:
     # brew install tree && tree -a
     # 去掉initUpdater不然报Please download new version of Redis Desktop Manager，不能使用
     # sed -i '.back' 's/initUpdater();/\/\/initUpdater();/g' ./app/app.cpp
+    # macdeployqt
+    # https://doc.qt.io/qt-5/macos-deployment.html
     - name: build and package
       id: build_and_package
       run: |
@@ -228,7 +232,10 @@ jobs:
         qmake rdm.pro CONFIG-=debug
         make -s -j 8
         cd ../bin/osx/release
-        brew install tree && tree -L 3
+        brew install tree
+        tree -a ./Redis\ Desktop\ Manager.app
+        tree -L 3
+        otool -L ./Redis\ Desktop\ Manager.app/Contents/MacOS/Redis\ Desktop\ Manager
         macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -always-overwrite -dmg
     
     - name: Upload Release Asset
