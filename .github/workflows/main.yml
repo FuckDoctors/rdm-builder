@@ -210,9 +210,10 @@ jobs:
       run: |
         cd rdm
         mkdir -p bin/osx/release && cd bin/osx/release
-        cp -Rf $GITHUB_WORKSPACE/rdm/src/py/ .
+        cp -Rf $GITHUB_WORKSPACE/rdm/src/py .
+        cd py
         echo six >> requirements.txt
-        sudo pip3 install --prefix . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
+        sudo pip3 install -t . -r requirements.txt
         which python
         which python3
         sudo python3 -m compileall -b .
