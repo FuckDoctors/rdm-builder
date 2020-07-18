@@ -113,6 +113,7 @@ jobs:
       run: |
         cd rdm\build\windows\installer\resources
         xcopy %GITHUB_WORKSPACE%\rdm\src\py . /s /i
+        echo six >> requirements.txt
         pip3 install --prefix . -r requirements.txt
         python -m compileall -b .
         del /s /q *.py
@@ -210,6 +211,7 @@ jobs:
         cd rdm
         mkdir -p bin/osx/release && cd bin/osx/release
         cp -Rf $GITHUB_WORKSPACE/rdm/src/py/ .
+        echo six >> requirements.txt
         sudo pip3 install --prefix . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
         which python
         which python3
@@ -235,6 +237,7 @@ jobs:
         brew install tree
         tree -a ./Redis\ Desktop\ Manager.app
         tree -L 3
+        zip -q -r release.zip .
         otool -L ./Redis\ Desktop\ Manager.app/Contents/MacOS/Redis\ Desktop\ Manager
         macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -always-overwrite -dmg
     
@@ -248,3 +251,13 @@ jobs:
         asset_path: rdm/bin/osx/release/Redis Desktop Manager.dmg
         asset_name: 'Redis Desktop Manager.dmg'
         asset_content_type: application/dmg
+      
+    - name: Upload Release Asset for debug
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: rdm/bin/osx/release/release.zip
+        asset_name: release_osx.zip
+        asset_content_type: application/zip
