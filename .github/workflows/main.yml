@@ -227,6 +227,8 @@ jobs:
     # sed -i '.back' 's/initUpdater();/\/\/initUpdater();/g' ./app/app.cpp
     # macdeployqt
     # https://doc.qt.io/qt-5/macos-deployment.html
+    # Qt Translations are not being copied
+    # https://github.com/probonopd/linuxdeployqt/issues/115
     - name: build and package
       id: build_and_package
       run: |
@@ -239,6 +241,7 @@ jobs:
         tree -a ./Redis\ Desktop\ Manager.app
         tree -L 3
         zip -q -r release.zip .
+        cp -Rf py ./Redis\ Desktop\ Manager.app/Contents/Resources/
         otool -L ./Redis\ Desktop\ Manager.app/Contents/MacOS/Redis\ Desktop\ Manager
         macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -always-overwrite -dmg
     
