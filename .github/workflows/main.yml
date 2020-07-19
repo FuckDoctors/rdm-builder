@@ -8,19 +8,19 @@ name: CI for redis desktop manager
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [ pre-release ]
     paths-ignore: 
       - 'README.md'
       - 'LICENSE'
   pull_request:
-    branches: [ master ]
+    branches: [ pre-release ]
     paths-ignore: 
       - 'README.md'
       - 'LICENSE'
 
 env:
-  RDM_REF: 2020.1
-  VERSION: 2020.1.0
+  RDM_REF: 2020.2
+  VERSION: 2020.2.0
   PYTHON_EMBEDDED_VERSION: 3.7.8
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -43,12 +43,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ env.RDM_REF }}
-          release_name: v${{ env.RDM_REF }}
+          tag_name: ${{ env.RDM_REF }}-beta
+          release_name: v${{ env.RDM_REF }}-beta
           body: |
-            ${{ env.RDM_REF }}
+            ${{ env.RDM_REF }}-beta
           draft: false
-          prerelease: false
+          prerelease: true
 
   build_on_windows:
     needs: create_release
@@ -73,7 +73,8 @@ jobs:
         repository: uglide/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
-        ref: ${{ env.RDM_REF }}
+#         ref: ${{ env.RDM_REF }}
+        ref: 2020
 
     # install QT   
     - name: install QT
@@ -108,7 +109,15 @@ jobs:
     - name: pip install
       shell: cmd
       run: |
-        pip3 install -r rdm/src/py/requirements.txt
+        cd rdm\build\windows\installer\resources
+        xcopy %GITHUB_WORKSPACE%\rdm\src\py . /s /i
+        echo six >> requirements.txt
+        pip3 install --prefix . -r requirements.txt
+        python -m compileall -b .
+        del /s /q *.py
+        forfiles /p "." /s /m __pycache__ /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
+        forfiles /p "." /s /m *.dist-info /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
+        forfiles /p "." /s /m *.egg-info /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
 
     # Runs a single command using the runners shell
     - name: build
@@ -119,7 +128,7 @@ jobs:
         python rdm\build\utils\set_version.py ${{ env.VERSION }} > rdm\src\version.h
         cd rdm\src
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
-        qmake rdm.pro
+        qmake rdm.pro CONFIG-=debug
         nmake
 
     # 缺少python37.dll
@@ -133,7 +142,9 @@ jobs:
         7z.exe x python-embed.zip python37.zip python3.dll python37.dll
         del python-embed.zip
 
-    # windeployqt.exe -- --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
+    # windeployqt
+    # https://doc.qt.io/qt-5/windows-deployment.html
+    # windeployqt.exe --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
     - name: package
       id: pacage
       shell: cmd
@@ -143,7 +154,7 @@ jobs:
         copy /y bin\windows\release\rdm.exp build\windows\installer\resources\rdm.exp
         copy /y bin\windows\release\rdm.lib build\windows\installer\resources\rdm.lib
         cd build\windows\installer\resources
-        windeployqt.exe --release --force --qmldir ../../../../src/qml rdm.exe
+        windeployqt.exe --no-angle --no-opengl-sw --no-compiler-runtime --release --force --qmldir ../../../../src/qml rdm.exe
         makensis.exe /V1 /DVERSION=${{ env.VERSION }} ../installer.nsi
 
     - name: Upload Release Asset
@@ -170,7 +181,8 @@ jobs:
         repository: uglide/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
-        ref: ${{ env.RDM_REF }}
+#         ref: ${{ env.RDM_REF }}
+        ref: 2020
 
     # install QT   
     - name: install QT
@@ -189,24 +201,39 @@ jobs:
     # https://github.com/pypa/pip/issues/4390
     # https://github.com/pypa/pip/issues/4139
     # https://github.com/pypa/pip/issues/562
+    # sudo pip3 install --prefix . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
+    # sudo pip3 install -t . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
     - name: pip install
       run: |
         cd rdm
         mkdir -p bin/osx/release && cd bin/osx/release
-        sudo pip3 install --prefix . -r $GITHUB_WORKSPACE/rdm/src/py/requirements.txt
+        cp -Rf $GITHUB_WORKSPACE/rdm/src/py .
+        cd py
+        echo six >> requirements.txt
+        sudo pip3 install -t . -r requirements.txt
+        which python
+        which python3
+        sudo python3 -m compileall -b .
+        sudo find . -name "*.py" | sudo xargs rm -rf
+        sudo find . -name "__pycache__" | sudo xargs rm -rf
+        sudo find . -name "*.dist-info" | sudo xargs rm -rf
+        sudo find . -name "*.egg-info" | sudo xargs rm -rf
 
-    # brew install tree && tree -a
-    # 去掉initUpdater不然报Please download new version of Redis Desktop Manager，不能使用
+    # macdeployqt
+    # https://doc.qt.io/qt-5/macos-deployment.html
+    # Qt Translations are not being copied
+    # https://github.com/probonopd/linuxdeployqt/issues/115
     - name: build and package
       id: build_and_package
       run: |
         python ./rdm/build/utils/set_version.py ${{ env.VERSION }} > ./rdm/src/version.h
         cd rdm/src
-        sed -i '.back' 's/initUpdater();/\/\/initUpdater();/g' ./app/app.cpp
         qmake rdm.pro CONFIG-=debug
         make -s -j 8
         cd ../bin/osx/release
-        macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -dmg
+        zip -q -r release.zip .
+        cp -Rf py ./Redis\ Desktop\ Manager.app/Contents/Resources/
+        macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -always-overwrite -dmg
     
     - name: Upload Release Asset
       id: upload-release-asset 
