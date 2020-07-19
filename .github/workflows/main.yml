@@ -122,6 +122,16 @@ jobs:
         forfiles /p "." /s /m *.egg-info /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
         tree /f /a ../..
 
+    # https://doc.qt.io/qt-5/linguist-manager.html
+    # lupdate rdm.pro
+    - name: translations
+      shell: cmd
+      run: |
+        cd rdm\src
+        lupdate rdm.pro
+        lrelease -verbose rdm.pro
+        xcopy resources\translations\*.qm ..\build\windows\installer\resources\translations /s /i
+
     # Runs a single command using the runners shell
     - name: build
       shell: cmd
@@ -144,16 +154,6 @@ jobs:
         wget "https://www.python.org/ftp/python/${{ env.PYTHON_EMBEDDED_VERSION }}/python-${{ env.PYTHON_EMBEDDED_VERSION }}-embed-amd64.zip" -outfile "python-embed.zip"
         7z.exe x python-embed.zip python37.zip python3.dll python37.dll
         del python-embed.zip
-
-    # https://doc.qt.io/qt-5/linguist-manager.html
-    # lupdate rdm.pro
-    - name: translations
-      shell: cmd
-      run: |
-        cd rdm\src
-        lupdate rdm.pro
-        lrelease -verbose rdm.pro
-        xcopy resources\translations\*.qm ..\build\windows\installer\resources\translations /s /i
 
     # windeployqt
     # https://doc.qt.io/qt-5/windows-deployment.html
@@ -232,6 +232,12 @@ jobs:
         sudo find . -name "*.dist-info" | sudo xargs rm -rf
         sudo find . -name "*.egg-info" | sudo xargs rm -rf
 
+    - name: release translations
+      run: |
+        cd rdm/src
+        lupdate rdm.pro
+        lrelease -verbose rdm.pro
+
     # brew install tree && tree -a
     # 去掉initUpdater不然报Please download new version of Redis Desktop Manager，不能使用
     # sed -i '.back' 's/initUpdater();/\/\/initUpdater();/g' ./app/app.cpp
@@ -247,13 +253,10 @@ jobs:
         qmake rdm.pro CONFIG-=debug
         make -s -j 8
 
-    - name: translations
+    - name: copy translations
       run: |
-        cd rdm/src
-        lupdate rdm.pro
-        lrelease -verbose rdm.pro
-        mkdir ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/Resources/translations
-        cp -f ./resources/translations/*.qm ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/Resources/translations
+        mkdir ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/translations
+        cp -f ./resources/translations/*.qm ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/translations
 
     - name: package
       id: package
