@@ -255,6 +255,7 @@ jobs:
 
     - name: copy translations
       run: |
+        cd rdm/src
         mkdir ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/translations
         cp -f ./resources/translations/*.qm ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/translations
 
