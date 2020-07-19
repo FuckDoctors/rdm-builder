@@ -239,18 +239,26 @@ jobs:
     # https://doc.qt.io/qt-5/macos-deployment.html
     # Qt Translations are not being copied
     # https://github.com/probonopd/linuxdeployqt/issues/115
-    - name: build and package
-      id: build_and_package
+    - name: build
+      id: build
       run: |
         python ./rdm/build/utils/set_version.py ${{ env.VERSION }} > ./rdm/src/version.h
         cd rdm/src
         qmake rdm.pro CONFIG-=debug
         make -s -j 8
+
+    - name: translations
+      run: |
+        cd rdm/src
         lupdate rdm.pro
         lrelease -verbose rdm.pro
-        mkdir ./Redis\ Desktop\ Manager.app/Contents/Resources/translations
-        cp -f ./resources/translations/*.qm ./Redis\ Desktop\ Manager.app/Contents/Resources/translations
-        cd ../bin/osx/release
+        mkdir ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/Resources/translations
+        cp -f ./resources/translations/*.qm ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/Resources/translations
+
+    - name: package
+      id: package
+      run: |
+        cd rdm/bin/osx/release
         brew install tree
         tree -a ./Redis\ Desktop\ Manager.app
         tree -L 3
@@ -258,7 +266,7 @@ jobs:
         cp -Rf py ./Redis\ Desktop\ Manager.app/Contents/Resources/
         otool -L ./Redis\ Desktop\ Manager.app/Contents/MacOS/Redis\ Desktop\ Manager
         macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -always-overwrite -dmg
-    
+
     - name: Upload Release Asset
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1.0.2
