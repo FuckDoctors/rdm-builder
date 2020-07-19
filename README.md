@@ -15,10 +15,14 @@ Official Download: [https://redisdesktop.com](https://redisdesktop.com/)
 - [RedisDesktopManager-Windows](https://github.com/lework/RedisDesktopManager-Windows)
 - [RedisDesktopManager-Mac](https://github.com/onewe/RedisDesktopManager-Mac)
 
-## Release
+## Release & Pre-release
 
 - [windows](https://github.com/FuckDoctors/rdm-builder/releases)
 - [macOS](https://github.com/FuckDoctors/rdm-builder/releases)
+
+### Pre-release使用最新的代码编译。
+
+- 修复macOS版formatter error
 
 ## Credits & 感谢
 
