@@ -19,8 +19,8 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2020.1
-  VERSION: 2020.1.0
+  RDM_REF: 2020.2
+  VERSION: 2020.2.0
   PYTHON_EMBEDDED_VERSION: 3.7.8
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -145,6 +145,16 @@ jobs:
         7z.exe x python-embed.zip python37.zip python3.dll python37.dll
         del python-embed.zip
 
+    # https://doc.qt.io/qt-5/linguist-manager.html
+    # lupdate rdm.pro
+    - name: translations
+      shell: cmd
+      run: |
+        cd rdm\src
+        lupdate rdm.pro
+        lrelease -verbose rdm.pro
+        xcopy resources\translations\*.qm ..\build\windows\installer\resources\translations /s /i
+
     # windeployqt
     # https://doc.qt.io/qt-5/windows-deployment.html
     # windeployqt.exe --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
@@ -157,7 +167,7 @@ jobs:
         copy /y bin\windows\release\rdm.exp build\windows\installer\resources\rdm.exp
         copy /y bin\windows\release\rdm.lib build\windows\installer\resources\rdm.lib
         cd build\windows\installer\resources
-        windeployqt.exe --no-angle --no-opengl-sw --no-compiler-runtime --release --force --qmldir ../../../../src/qml rdm.exe
+        windeployqt.exe --no-angle --no-opengl-sw --no-compiler-runtime --no-translations --release --force --qmldir ../../../../src/qml rdm.exe
         makensis.exe /V1 /DVERSION=${{ env.VERSION }} ../installer.nsi
 
     - name: Upload Release Asset
@@ -236,6 +246,10 @@ jobs:
         cd rdm/src
         qmake rdm.pro CONFIG-=debug
         make -s -j 8
+        lupdate rdm.pro
+        lrelease -verbose rdm.pro
+        mkdir ./Redis\ Desktop\ Manager.app/Contents/Resources/translations
+        cp -f ./resources/translations/*.qm ./Redis\ Desktop\ Manager.app/Contents/Resources/translations
         cd ../bin/osx/release
         brew install tree
         tree -a ./Redis\ Desktop\ Manager.app
