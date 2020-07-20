@@ -108,13 +108,14 @@ jobs:
     # pip install
     # pip3 install -t . -r requirements.txt
     # -t .会把所有的python依赖下载到当前目录，显得太乱
+    # pip3 install --prefix . -r requirements.txt
     - name: pip install
       shell: cmd
       run: |
         cd rdm\build\windows\installer\resources
         xcopy %GITHUB_WORKSPACE%\rdm\src\py . /s /i
-        echo six >> requirements.txt
-        pip3 install --prefix . -r requirements.txt
+        mkdir Lib\site-packages
+        pip3 install -t Lib\site-packages -r requirements.txt
         python -m compileall -b .
         del /s /q *.py
         forfiles /p "." /s /m __pycache__ /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
