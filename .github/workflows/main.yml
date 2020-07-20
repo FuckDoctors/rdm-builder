@@ -111,8 +111,8 @@ jobs:
       run: |
         cd rdm\build\windows\installer\resources
         xcopy %GITHUB_WORKSPACE%\rdm\src\py . /s /i
-        echo six >> requirements.txt
-        pip3 install --prefix . -r requirements.txt
+        mkdir Lib\site-packages
+        pip3 install -t Lib\site-packages -r requirements.txt
         python -m compileall -b .
         del /s /q *.py
         forfiles /p "." /s /m __pycache__ /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
@@ -142,6 +142,7 @@ jobs:
         nmake
 
     # 缺少python37.dll
+    # fix formatter error, unicodedata _bz2
     - name: add python37.dll
       shell: powershell
 #      env:
@@ -149,7 +150,7 @@ jobs:
       run: |
         cd rdm\build\windows\installer\resources
         wget "https://www.python.org/ftp/python/${{ env.PYTHON_EMBEDDED_VERSION }}/python-${{ env.PYTHON_EMBEDDED_VERSION }}-embed-amd64.zip" -outfile "python-embed.zip"
-        7z.exe x python-embed.zip python37.zip python3.dll python37.dll
+        7z.exe x python-embed.zip python37.zip python3.dll python37.dll unicodedata.pyd _bz2.pyd
         del python-embed.zip
 
     # windeployqt
