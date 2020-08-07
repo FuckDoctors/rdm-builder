@@ -211,6 +211,12 @@ jobs:
         cd rdm
         cd ./src && cp ./resources/Info.plist.sample ./resources/Info.plist
     
+    - name: setup python
+      run: |
+        brew unlink python@3.8
+        brew install python@3.7
+        brew link --force python@3.7
+    
     # 使用私有库,egg-links时-t不能同时使用，--user解决权限问题
     # https://github.com/UnitedIncome/serverless-python-requirements/issues/240
     # https://github.com/pypa/pip/issues/4390
