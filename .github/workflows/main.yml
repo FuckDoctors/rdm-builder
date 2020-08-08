@@ -211,17 +211,17 @@ jobs:
         cd rdm
         cd ./src && cp ./resources/Info.plist.sample ./resources/Info.plist
     
-#     - name: setup python
-#       run: |
-#         brew unlink python@3.8
-#         brew install python@3.7
-#         brew link --overwrite python3
-
     - name: setup python
       run: |
-        brew info python
-        brew unlink python3
-        brew switch python 3.7.8
+        brew unlink python@3.8
+        brew install python@3.7
+        brew link --force --overwrite python3
+
+#     - name: setup python
+#       run: |
+#         brew info python
+#         brew unlink python3
+#         brew switch python 3.7.8
     
     # 使用私有库,egg-links时-t不能同时使用，--user解决权限问题
     # https://github.com/UnitedIncome/serverless-python-requirements/issues/240
