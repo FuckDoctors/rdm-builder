@@ -215,7 +215,7 @@ jobs:
       run: |
         brew unlink python@3.8
         brew install python@3.7
-        brew link --force --overwrite python3
+        brew link --force --overwrite python@3.7
 
 #     - name: setup python
 #       run: |
