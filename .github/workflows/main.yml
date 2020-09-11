@@ -21,7 +21,7 @@ on:
 env:
   RDM_REF: 2020.3
   VERSION: 2020.3.0
-  PYTHON_EMBEDDED_VERSION: 3.7.8
+  PYTHON_EMBEDDED_VERSION: 3.7.9
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -103,7 +103,7 @@ jobs:
     # install python3
     - name: install python37
       shell: cmd
-      run: mklink /d C:\Python37-x64 C:\hostedtoolcache\windows\python\3.7.8\x64
+      run: mklink /d C:\Python37-x64 C:\hostedtoolcache\windows\python\3.7.9\x64
 
     # pip install
     - name: pip install
