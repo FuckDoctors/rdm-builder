@@ -19,7 +19,7 @@ Official Download: [https://redisdesktop.com](https://redisdesktop.com/)
 
 - [windows](https://github.com/FuckDoctors/rdm-builder/releases)
 - [macOS](https://github.com/FuckDoctors/rdm-builder/releases)
-- [Pre-release使用最新的代码编译，尝鲜请使用Pre-release版](https://github.com/FuckDoctors/rdm-builder/releases/tag/2020.2-beta)
+- Pre-release使用最新的代码编译，尝鲜请使用Pre-release版，可自行fork编译
 
 ## Credits & 感谢
 
