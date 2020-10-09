@@ -95,8 +95,8 @@ jobs:
 
     - name: build lz4
       run: |
-        cd rdm/3rdparty/lz4
-        make lib lib-release liblz4.a
+        cd rdm/3rdparty/lz4/build/cmake
+        cmake -G "Visual Studio 16 2019" -A x64 -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON --build . --config "Release"
 
 #    # install python3  
 #    - name: install Python3
@@ -202,8 +202,8 @@ jobs:
 
     - name: build lz4
       run: |
-        cd rdm/3rdparty/lz4
-        make lib lib-release liblz4.a
+        cd rdm/3rdparty/lz4/build/cmake
+        cmake -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON --build .
 
     # install QT   
     - name: install QT
