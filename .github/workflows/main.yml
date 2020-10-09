@@ -43,7 +43,7 @@ jobs:
       - uses: dev-drprasad/delete-tag-and-release@v0.1.2
         with:
           delete_release: true # default: false
-          tag_name: ${{ env.RDM_REF }} # tag name to delete
+          tag_name: ${{ env.RDM_REF }}-nightly # tag name to delete
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
