@@ -57,10 +57,10 @@ jobs:
         #configuration: [Debug, Release]
         configuration: [Release]
         qt_target: [Desktop]
-        qt_arch: [win64_msvc2017_64]
+        qt_arch: [win64_msvc2019_64]
         # 额外设置msvc_arch
         include:
-          - qt_arch: win64_msvc2017_64
+          - qt_arch: win64_msvc2019_64
             msvc_arch: x64
 
     runs-on: windows-latest
@@ -68,7 +68,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2.2.0
+    - uses: actions/checkout@v2
       with:
         repository: uglide/RedisDesktopManager
         path: rdm
@@ -78,9 +78,9 @@ jobs:
 
     # install QT   
     - name: install QT
-      uses: jurplel/install-qt-action@v2.7.2
+      uses: jurplel/install-qt-action@v2
       with: 
-        version: '5.13.2'
+        version: '5.15.1'
         modules: 'qtcharts'
 
     - name : fix compilation
@@ -92,6 +92,11 @@ jobs:
       run: |
         cd rdm/3rdparty
         nuget install zlib-msvc14-x64 -Version 1.2.11.7795
+
+    - name: build lz4
+      run: |
+        cd rdm/3rdparty/lz4
+        make lib lib-release liblz4.a
 
 #    # install python3  
 #    - name: install Python3
@@ -170,7 +175,7 @@ jobs:
 
     - name: Upload Release Asset
       id: upload-release-asset 
-      uses: actions/upload-release-asset@v1.0.2
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -187,7 +192,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2.2.0
+    - uses: actions/checkout@v2
       with:
         repository: uglide/RedisDesktopManager
         path: rdm
@@ -195,11 +200,16 @@ jobs:
 #         ref: ${{ env.RDM_REF }}
         ref: 2020
 
+    - name: build lz4
+      run: |
+        cd rdm/3rdparty/lz4
+        make lib lib-release liblz4.a
+
     # install QT   
     - name: install QT
-      uses: jurplel/install-qt-action@v2.7.2
+      uses: jurplel/install-qt-action@v2
       with: 
-        version: '5.13.2'
+        version: '5.15.1'
         modules: 'qtcharts'
     
     - name: copy info.plist
@@ -272,7 +282,7 @@ jobs:
 
     - name: Upload Release Asset
       id: upload-release-asset 
-      uses: actions/upload-release-asset@v1.0.2
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
