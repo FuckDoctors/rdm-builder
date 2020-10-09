@@ -19,8 +19,8 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2020.3
-  VERSION: 2020.3.0
+  RDM_REF: 2020.4
+  VERSION: 2020.4.0
   PYTHON_EMBEDDED_VERSION: 3.7.9
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -57,10 +57,10 @@ jobs:
         #configuration: [Debug, Release]
         configuration: [Release]
         qt_target: [Desktop]
-        qt_arch: [win64_msvc2017_64]
+        qt_arch: [win64_msvc2019_64]
         # 额外设置msvc_arch
         include:
-          - qt_arch: win64_msvc2017_64
+          - qt_arch: win64_msvc2019_64
             msvc_arch: x64
 
     runs-on: windows-latest
@@ -68,7 +68,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2.2.0
+    - uses: actions/checkout@v2
       with:
         repository: uglide/RedisDesktopManager
         path: rdm
@@ -77,9 +77,9 @@ jobs:
 
     # install QT   
     - name: install QT
-      uses: jurplel/install-qt-action@v2.7.2
+      uses: jurplel/install-qt-action@v2
       with: 
-        version: '5.13.2'
+        version: '5.15.1'
         modules: 'qtcharts'
 
     - name : fix compilation
@@ -91,6 +91,13 @@ jobs:
       run: |
         cd rdm/3rdparty
         nuget install zlib-msvc14-x64 -Version 1.2.11.7795
+
+    # from https://github.com/lework/RedisDesktopManager-Windows
+    - name: build lz4
+      run: |
+        cd rdm/3rdparty/lz4/build/cmake
+        cmake -G "Visual Studio 16 2019" -A x64 -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON --build .
+        cmake --build . --config "Release"
 
 #    # install python3  
 #    - name: install Python3
@@ -169,7 +176,7 @@ jobs:
 
     - name: Upload Release Asset
       id: upload-release-asset 
-      uses: actions/upload-release-asset@v1.0.2
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -186,19 +193,24 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2.2.0
+    - uses: actions/checkout@v2
       with:
         repository: uglide/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
-#         ref: ${{ env.RDM_REF }}
-        ref: 2020
+        ref: ${{ env.RDM_REF }}
+
+    - name: build lz4
+      run: |
+        cd rdm/3rdparty/lz4/build/cmake
+        cmake -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON --build .
+        make -s -j 8
 
     # install QT   
     - name: install QT
-      uses: jurplel/install-qt-action@v2.7.2
+      uses: jurplel/install-qt-action@v2
       with: 
-        version: '5.13.2'
+        version: '5.15.1'
         modules: 'qtcharts'
     
     - name: copy info.plist
@@ -271,7 +283,7 @@ jobs:
 
     - name: Upload Release Asset
       id: upload-release-asset 
-      uses: actions/upload-release-asset@v1.0.2
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
