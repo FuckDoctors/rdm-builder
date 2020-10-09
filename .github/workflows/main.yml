@@ -17,10 +17,12 @@ on:
     paths-ignore: 
       - 'README.md'
       - 'LICENSE'
+  schedule:
+    - cron: '0 1 * * *' # Runs at 01:00 UTC every day
 
 env:
-  RDM_REF: 2020.5
-  VERSION: 2020.5.0
+  RDM_REF: 2020
+  VERSION: 2020.99.0
   PYTHON_EMBEDDED_VERSION: 3.7.9
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -36,6 +38,14 @@ jobs:
       #   uses: actions/checkout@v2
       #   with:
       #     fetch-depth: 0
+
+      # delete old release
+      - uses: dev-drprasad/delete-tag-and-release@v0.1.2
+        with:
+          delete_release: true # default: false
+          tag_name: ${{ env.RDM_REF }} # tag name to delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
@@ -73,8 +83,7 @@ jobs:
         repository: uglide/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
-#         ref: ${{ env.RDM_REF }}
-        ref: 2020
+        ref: ${{ env.RDM_REF }}
 
     # install QT   
     - name: install QT
@@ -200,8 +209,7 @@ jobs:
         repository: uglide/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
-#         ref: ${{ env.RDM_REF }}
-        ref: 2020
+        ref: ${{ env.RDM_REF }}
 
     - name: build lz4
       run: |
