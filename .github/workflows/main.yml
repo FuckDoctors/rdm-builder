@@ -1,5 +1,6 @@
 # http://docs.redisdesktop.com/en/latest/install/
 # https://github.com/actions/virtual-environments/blob/master/images/win/Windows2019-Readme.md
+# https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
 
 # This is a basic workflow to help you get started with Actions
 name: CI for redis desktop manager
@@ -18,7 +19,7 @@ on:
       - 'README.md'
       - 'LICENSE'
   schedule:
-    - cron: '0 1 * * *' # Runs at 01:00 UTC every day
+    - cron: '0 22 * * *' # Runs at 22:00 UTC every day
 
 env:
   RDM_REF: 2020
