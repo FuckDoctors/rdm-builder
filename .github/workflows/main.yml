@@ -282,17 +282,17 @@ jobs:
     - name: copy translations
       run: |
         cd rdm/src
-        mkdir ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/translations
-        cp -f ./resources/translations/*.qm ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/translations
+        mkdir ../bin/osx/release/RDM.app/Contents/translations
+        cp -f ./resources/translations/*.qm ../bin/osx/release/RDM.app/Contents/translations
 
     - name: package
       id: package
       run: |
         cd rdm/bin/osx/release
         zip -q -r release.zip .
-        cp -Rf py ./Redis\ Desktop\ Manager.app/Contents/Resources/
-        otool -L ./Redis\ Desktop\ Manager.app/Contents/MacOS/Redis\ Desktop\ Manager
-        macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -always-overwrite -dmg
+        cp -Rf py ./RDM.app/Contents/Resources/
+        otool -L ./RDM.app/Contents/MacOS/RDM
+        macdeployqt ./RDM.app -qmldir=../../../src/qml -always-overwrite -dmg
 
     - name: Upload Release Asset
       id: upload-release-asset 
@@ -301,6 +301,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: rdm/bin/osx/release/Redis Desktop Manager.dmg
-        asset_name: 'Redis Desktop Manager.dmg'
+        asset_path: rdm/bin/osx/release/RDM.dmg
+        asset_name: RDM.dmg
         asset_content_type: application/dmg
