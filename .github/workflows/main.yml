@@ -19,8 +19,8 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2020.4
-  VERSION: 2020.4.0
+  RDM_REF: 2020.5
+  VERSION: 2020.5.0
   PYTHON_EMBEDDED_VERSION: 3.7.9
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -182,8 +182,8 @@ jobs:
       with:
         # upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: rdm/build/windows/installer/redis-desktop-manager-${{ env.VERSION }}.exe
-        asset_name: redis-desktop-manager-${{ env.VERSION }}.exe
+        asset_path: rdm/build/windows/installer/rdm-${{ env.VERSION }}.exe
+        asset_name: rdm-${{ env.VERSION }}.exe
         asset_content_type: application/vnd.microsoft.portable-executable
 
   build_on_osx:
@@ -269,17 +269,17 @@ jobs:
     - name: copy translations
       run: |
         cd rdm/src
-        mkdir ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/translations
-        cp -f ./resources/translations/*.qm ../bin/osx/release/Redis\ Desktop\ Manager.app/Contents/translations
+        mkdir ../bin/osx/release/RDM.app/Contents/translations
+        cp -f ./resources/translations/*.qm ../bin/osx/release/RDM.app/Contents/translations
 
     - name: package
       id: package
       run: |
         cd rdm/bin/osx/release
         zip -q -r release.zip .
-        cp -Rf py ./Redis\ Desktop\ Manager.app/Contents/Resources/
-        otool -L ./Redis\ Desktop\ Manager.app/Contents/MacOS/Redis\ Desktop\ Manager
-        macdeployqt ./Redis\ Desktop\ Manager.app -qmldir=../../../src/qml -always-overwrite -dmg
+        cp -Rf py ./RDM.app/Contents/Resources/
+        otool -L ./RDM.app/Contents/MacOS/RDM
+        macdeployqt ./RDM.app -qmldir=../../../src/qml -always-overwrite -dmg
 
     - name: Upload Release Asset
       id: upload-release-asset 
@@ -288,6 +288,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: rdm/bin/osx/release/Redis Desktop Manager.dmg
-        asset_name: 'Redis Desktop Manager.dmg'
+        asset_path: rdm/bin/osx/release/RDM.dmg
+        asset_name: RDM.dmg
         asset_content_type: application/dmg
