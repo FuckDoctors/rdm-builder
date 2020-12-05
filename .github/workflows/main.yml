@@ -121,7 +121,7 @@ jobs:
     # install python3
     - name: install python37
       shell: cmd
-      run: mklink /d C:\Python37-x64 C:\hostedtoolcache\windows\python\3.7.9\x64
+      run: mklink /d C:\Python37-x64 C:\hostedtoolcache\windows\python\${{ env.PYTHON_EMBEDDED_VERSION }}\x64
 
     # pip install
     - name: pip install
@@ -233,7 +233,7 @@ jobs:
     
     - name: setup python
       run: |
-        brew unlink python@3.8
+        brew unlink python@3.9
         brew install python@3.7
         brew link --force python@3.7
     
