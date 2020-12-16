@@ -235,7 +235,7 @@ jobs:
       run: |
         brew unlink python@3.9
         brew install python@3.7
-        brew link --force python@3.7
+        brew link --overwrite python@3.7
     
     # 使用私有库,egg-links时-t不能同时使用，--user解决权限问题
     # https://github.com/UnitedIncome/serverless-python-requirements/issues/240
