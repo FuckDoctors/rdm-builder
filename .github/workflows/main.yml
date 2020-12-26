@@ -22,8 +22,8 @@ on:
     - cron: '0 22 * * *' # Runs at 22:00 UTC every day
 
 env:
-  RDM_REF: 2020
-  VERSION: 2020.99.0
+  RDM_REF: 2021
+  VERSION: 2021.99.0
   PYTHON_EMBEDDED_VERSION: 3.7.9
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
