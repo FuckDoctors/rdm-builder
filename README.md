@@ -19,7 +19,7 @@ Official Download: [https://redisdesktop.com](https://redisdesktop.com/)
 
 - [windows](https://github.com/FuckDoctors/rdm-builder/releases)
 - [macOS](https://github.com/FuckDoctors/rdm-builder/releases)
-- [Pre-release使用最新的代码编译，尝鲜请使用Nightly版，每天自动编译](https://github.com/FuckDoctors/rdm-builder/releases/tag/2020-nightly)  ___Nightly___ 🎉
+- [Pre-release使用最新的代码编译，尝鲜请使用Nightly版，每天自动编译](https://github.com/FuckDoctors/rdm-builder/releases/tag/2021-nightly)  ___Nightly___ 🎉
 
 ## Credits & 感谢
 
