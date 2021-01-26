@@ -92,6 +92,7 @@ jobs:
       with: 
         version: '5.15.1'
         modules: 'qtcharts'
+        extra: '--timeout 600'
 
     - name : fix compilation
       run: |
