@@ -216,7 +216,8 @@ jobs:
     - name: build lz4
       run: |
         cd rdm/3rdparty/lz4/build/cmake
-        cmake -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON --build .
+        cmake -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON
+        cmake --build .
         ls
         make -s -j 8
 
