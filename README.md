@@ -1,4 +1,4 @@
-![CI for redis desktop manager](https://github.com/FuckDoctors/rdm-builder/workflows/CI%20for%20redis%20desktop%20manager/badge.svg)
+[![CI for redis desktop manager](https://github.com/wadjsnkk/rdm-builder/actions/workflows/main.yml/badge.svg?branch=pre-release)](https://github.com/wadjsnkk/rdm-builder/actions/workflows/main.yml)
 
 # rdm-builder
 
