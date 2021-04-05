@@ -108,7 +108,8 @@ jobs:
     - name: build lz4
       run: |
         cd rdm/3rdparty/lz4/build/cmake
-        cmake -G "Visual Studio 16 2019" -A x64 -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON --build .
+        cmake -G "Visual Studio 16 2019" -A x64 -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON
+        cmake --build .
         tree . /f
         cmake --build . --config "Release"
 
