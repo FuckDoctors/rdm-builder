@@ -107,9 +107,9 @@ jobs:
     - name: build lz4
       run: |
         cd rdm/3rdparty/lz4/build/cmake
-        cmake -G "Visual Studio 16 2019" -A x64 -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON
+        cmake -G "Visual Studio 16 2019" -A x64 -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON -B .
         tree . /f
-        cmake
+        cmake --build .
 
 #    # install python3  
 #    - name: install Python3
