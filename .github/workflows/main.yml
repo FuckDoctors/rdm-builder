@@ -19,9 +19,10 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2021.4
-  VERSION: 2021.4.0
-  PYTHON_EMBEDDED_VERSION: 3.7.9
+  RDM_REF: 2021.5
+  VERSION: 2021.5.0
+  PY_LIB_VERSION: 38
+  PYTHON_EMBEDDED_VERSION: 3.8.10
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -107,9 +108,9 @@ jobs:
 #        architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
 
     # install python3
-    - name: install python37
+    - name: install python3
       shell: cmd
-      run: mklink /d C:\Python37-x64 C:\hostedtoolcache\windows\python\${{ env.PYTHON_EMBEDDED_VERSION }}\x64
+      run: mklink /d C:\Python${{ env.PY_LIB_VERSION }}-x64 C:\hostedtoolcache\windows\python\${{ env.PYTHON_EMBEDDED_VERSION }}\x64
 
     # pip install
     - name: pip install
@@ -147,16 +148,16 @@ jobs:
         qmake rdm.pro CONFIG-=debug
         nmake
 
-    # 缺少python37.dll
+    # 缺少python3.dll
     # fix formatter error, unicodedata _bz2
-    - name: add python37.dll
+    - name: add python3.dll
       shell: powershell
 #      env:
 #        PYTHON_EMBEDDED_VERSION: ${{ env.PYTHON_EMBEDDED_VERSION }}
       run: |
         cd rdm\build\windows\installer\resources
         wget "https://www.python.org/ftp/python/${{ env.PYTHON_EMBEDDED_VERSION }}/python-${{ env.PYTHON_EMBEDDED_VERSION }}-embed-amd64.zip" -outfile "python-embed.zip"
-        7z.exe x python-embed.zip python37.zip python3.dll python37.dll unicodedata.pyd _bz2.pyd
+        7z.exe x python-embed.zip python${{ env.PY_LIB_VERSION }}.zip python3.dll python${{ env.PY_LIB_VERSION }}.dll unicodedata.pyd _bz2.pyd
         del python-embed.zip
 
     # windeployqt
@@ -218,11 +219,11 @@ jobs:
         cd rdm
         cd ./src && cp ./resources/Info.plist.sample ./resources/Info.plist
     
-    - name: setup python
-      run: |
-        brew unlink python@3.9
-        brew install python@3.7
-        brew link --overwrite python@3.7
+#     - name: setup python
+#       run: |
+#         brew unlink python@3.9
+#         brew install python@3.7
+#         brew link --overwrite python@3.7
     
     # 使用私有库,egg-links时-t不能同时使用，--user解决权限问题
     # https://github.com/UnitedIncome/serverless-python-requirements/issues/240
