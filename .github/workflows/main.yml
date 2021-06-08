@@ -24,7 +24,8 @@ on:
 env:
   RDM_REF: 2021
   VERSION: 2021.99.0
-  PYTHON_EMBEDDED_VERSION: 3.9.5
+  PY_LIB_VERSION: 38
+  PYTHON_EMBEDDED_VERSION: 3.8.10
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -119,9 +120,9 @@ jobs:
 #        architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
 
     # install python3
-    - name: install python39
+    - name: install python3
       shell: cmd
-      run: mklink /d C:\Python39-x64 C:\hostedtoolcache\windows\python\${{ env.PYTHON_EMBEDDED_VERSION }}\x64
+      run: mklink /d C:\Python${{ env.PY_LIB_VERSION }}-x64 C:\hostedtoolcache\windows\python\${{ env.PYTHON_EMBEDDED_VERSION }}\x64
 
     # pip install
     - name: pip install
@@ -159,16 +160,16 @@ jobs:
         qmake rdm.pro CONFIG-=debug
         nmake
 
-    # 缺少python39.dll
+    # 缺少python3.dll
     # fix formatter error, unicodedata _bz2
-    - name: add python39.dll
+    - name: add python3.dll
       shell: powershell
 #      env:
 #        PYTHON_EMBEDDED_VERSION: ${{ env.PYTHON_EMBEDDED_VERSION }}
       run: |
         cd rdm\build\windows\installer\resources
         wget "https://www.python.org/ftp/python/${{ env.PYTHON_EMBEDDED_VERSION }}/python-${{ env.PYTHON_EMBEDDED_VERSION }}-embed-amd64.zip" -outfile "python-embed.zip"
-        7z.exe x python-embed.zip python39.zip python3.dll python39.dll unicodedata.pyd _bz2.pyd
+        7z.exe x python-embed.zip python${{ env.PY_LIB_VERSION }}.zip python3.dll python${{ env.PY_LIB_VERSION }}.dll unicodedata.pyd _bz2.pyd
         del python-embed.zip
 
     # windeployqt
