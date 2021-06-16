@@ -157,7 +157,7 @@ jobs:
         python rdm\build\utils\set_version.py ${{ env.VERSION }} > rdm\src\version.h
         cd rdm\src
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
-        qmake rdm.pro CONFIG-=debug
+        qmake rdm.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
         nmake
 
     # 缺少python3.dll
@@ -277,7 +277,7 @@ jobs:
       run: |
         python ./rdm/build/utils/set_version.py ${{ env.VERSION }} > ./rdm/src/version.h
         cd rdm/src
-        qmake rdm.pro CONFIG-=debug
+        qmake rdm.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
         make -s -j 8
 
     - name: copy translations
