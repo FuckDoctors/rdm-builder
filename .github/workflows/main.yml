@@ -19,10 +19,10 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2021.5
-  VERSION: 2021.5.0
-  PY_LIB_VERSION: 39
-  PYTHON_EMBEDDED_VERSION: 3.9.5
+  RDM_REF: 2021.6
+  VERSION: 2021.6.0
+  PY_LIB_VERSION: 38
+  PYTHON_EMBEDDED_VERSION: 3.8.10
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -145,7 +145,7 @@ jobs:
         python rdm\build\utils\set_version.py ${{ env.VERSION }} > rdm\src\version.h
         cd rdm\src
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
-        qmake rdm.pro CONFIG-=debug
+        qmake rdm.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
         nmake
 
     # 缺少python3.dll
@@ -264,7 +264,7 @@ jobs:
       run: |
         python ./rdm/build/utils/set_version.py ${{ env.VERSION }} > ./rdm/src/version.h
         cd rdm/src
-        qmake rdm.pro CONFIG-=debug
+        qmake rdm.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
         make -s -j 8
 
     - name: copy translations
