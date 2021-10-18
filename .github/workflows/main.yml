@@ -223,7 +223,8 @@ jobs:
     - name: setup python
       run: |
         brew unlink python@3.10
-        brew install python@3.9
+        brew unlink python@3.9
+        brew reinstall python@3.9
         brew link --overwrite python@3.9
 
     # install QT   
