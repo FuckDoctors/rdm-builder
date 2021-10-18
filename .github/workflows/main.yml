@@ -24,8 +24,8 @@ on:
 env:
   RDM_REF: 2021
   VERSION: 2021.99.0
-  PY_LIB_VERSION: 39
-  PYTHON_EMBEDDED_VERSION: 3.9.7
+  PY_LIB_VERSION: 38
+  PYTHON_EMBEDDED_VERSION: 3.8.10
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
