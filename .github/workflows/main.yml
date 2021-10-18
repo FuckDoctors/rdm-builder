@@ -24,8 +24,8 @@ on:
 env:
   RDM_REF: 2021
   VERSION: 2021.99.0
-  PY_LIB_VERSION: 38
-  PYTHON_EMBEDDED_VERSION: 3.8.10
+  PY_LIB_VERSION: 39
+  PYTHON_EMBEDDED_VERSION: 3.9.7
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -232,11 +232,11 @@ jobs:
         cd rdm
         cd ./src && cp ./resources/Info.plist.sample ./resources/Info.plist
     
-#     - name: setup python
-#       run: |
-#         brew unlink python@3.9
-#         brew install python@3.7
-#         brew link --overwrite python@3.7
+    - name: setup python
+      run: |
+        brew unlink python@3.10
+        brew install python@3.9
+        brew link --overwrite python@3.9
     
     # 使用私有库,egg-links时-t不能同时使用，--user解决权限问题
     # https://github.com/UnitedIncome/serverless-python-requirements/issues/240
