@@ -28,3 +28,4 @@ Official Download: [https://rdm.dev](https://rdm.dev)
 - [rdm编译打包的github Action配置](https://onew.me/2020/07/01/rdm-action/)
 - [Qt使用github-Actions自动化发行](https://zhuanlan.zhihu.com/p/95926317)
 - [源码编译Redis Desktop Manager](https://kany.me/2019/10/10/compile-redis-desktop-manager/)
+ 
