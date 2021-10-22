@@ -4,11 +4,11 @@
 
 Redis Desktop Manager Builder for windows and macOS
 
-Official Download: [https://redisdesktop.com](https://redisdesktop.com/)
+Official Download: [https://rdm.dev](https://rdm.dev)
 
 一个编译Windows版和macOS版Redis Desktop Manager的Github Action。
 
-有条件的同学请支持官方版本: [https://redisdesktop.com](https://redisdesktop.com/)
+有条件的同学请支持官方版本: [https://rdm.dev](https://rdm.dev)
 
 其他版本：
 
@@ -19,7 +19,7 @@ Official Download: [https://redisdesktop.com](https://redisdesktop.com/)
 
 - [windows](https://github.com/FuckDoctors/rdm-builder/releases)
 - [macOS](https://github.com/FuckDoctors/rdm-builder/releases)
-- [___Nightly___] [Pre-release使用最新的代码编译，每天自动编译(UTC 22:00 北京时间06:00)](https://github.com/FuckDoctors/rdm-builder/releases/tag/2021-nightly) 🎉
+- [Pre-release](https://github.com/FuckDoctors/rdm-builder/releases/tag/2021-nightly) [___Nightly___] 🎉
 
 ## Credits & 感谢
 
