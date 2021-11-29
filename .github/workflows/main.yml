@@ -109,7 +109,22 @@ jobs:
       run: |
         cd rdm/3rdparty/lz4/build/cmake
         cmake -G "Visual Studio 16 2019" -A x64 -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON -B .
-        tree . /f
+        cmake --build . --config Release
+
+    - name: build zstd
+      run: |
+        cd rdm/3rdparty/zstd/build/cmake
+        cmake . && make
+
+    - name: build snappy
+      run: |
+        cd rdm/3rdparty/snappy
+        cmake . && make
+
+    - name: build brotli
+      run: |
+        cd rdm/3rdparty/brotli
+        cmake -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
 
 #    # install python3  
@@ -219,6 +234,22 @@ jobs:
         cmake -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON
         ls
         make -s -j 8
+
+    - name: build zstd
+      run: |
+        cd rdm/3rdparty/zstd/build/cmake
+        cmake . && make
+
+    - name: build snappy
+      run: |
+        cd rdm/3rdparty/snappy
+        cmake . && make
+
+    - name: build brotli
+      run: |
+        cd rdm/3rdparty/brotli
+        cmake -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config Release
 
     - name: setup python
       run: |
