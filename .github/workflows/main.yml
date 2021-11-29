@@ -19,7 +19,7 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2021.8
+  RDM_REF: 2021.8-ssh
   VERSION: 2021.8.0
   PY_LIB_VERSION: 38
   PYTHON_EMBEDDED_VERSION: 3.8.10
@@ -71,7 +71,7 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       with:
-        repository: uglide/RedisDesktopManager
+        repository: w-a-n-g-s-h-u-n/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
         ref: ${{ env.RDM_REF }}
