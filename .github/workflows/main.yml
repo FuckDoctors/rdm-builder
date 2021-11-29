@@ -26,6 +26,7 @@ env:
   VERSION: 2021.99.0
   PY_LIB_VERSION: 38
   PYTHON_EMBEDDED_VERSION: 3.8.10
+  CMAKE_VS: Visual Studio 16 2019
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -114,16 +115,19 @@ jobs:
     - name: build zstd
       run: |
         cd rdm/3rdparty/zstd/build/cmake
+        cmake -G "${{ env.CMAKE_VS }}" -A x64 -B .
         cmake . && make
 
     - name: build snappy
       run: |
         cd rdm/3rdparty/snappy
+        cmake -G "${{ env.CMAKE_VS }}" -A x64 -B .
         cmake . && make
 
     - name: build brotli
       run: |
         cd rdm/3rdparty/brotli
+        cmake -G "${{ env.CMAKE_VS }}" -A x64 -B .
         cmake -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
 
