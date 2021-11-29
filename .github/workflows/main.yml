@@ -116,13 +116,13 @@ jobs:
       run: |
         cd rdm/3rdparty/zstd/build/cmake
         cmake -G "${{ env.CMAKE_VS }}" -A x64 -B .
-        cmake . && make
+        cmake --build . --config Release
 
     - name: build snappy
       run: |
         cd rdm/3rdparty/snappy
         cmake -G "${{ env.CMAKE_VS }}" -A x64 -B .
-        cmake . && make
+        cmake --build . --config Release
 
     - name: build brotli
       run: |
