@@ -19,7 +19,7 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2021.8
+  RDM_REF: 2021.8-ssh
   VERSION: 2021.8.0
   PY_LIB_VERSION: 38
   PYTHON_EMBEDDED_VERSION: 3.8.10
@@ -71,10 +71,24 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       with:
-        repository: uglide/RedisDesktopManager
+        repository: w-a-n-g-s-h-u-n/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
         ref: ${{ env.RDM_REF }}
+
+    - name: Install OpenSSL on Windows (slproweb)
+      run: |
+        curl.exe --output openssl.msi "https://slproweb.com/download/Win64OpenSSL-1_1_1L.msi"
+        msiexec /i openssl.msi /quiet /qn /norestart
+        mklink /d "C:\OpenSSL-Win64" "C:/Program Files/OpenSSL-Win64"
+      shell: cmd
+    - name: build libssh2
+      run: |
+        cd rdm/3rdparty/qredisclient/3rdparty/qsshclient/3rdparty/libssh2
+        md build
+        cd build
+        cmake . -G "Visual Studio 16 2019" -A x64 -DOPENSSL_ROOT_DIR="C:/Program Files/OpenSSL-Win64/include" -DOPENSSL_CRYPTO_LIBRARY="C:/Program Files/OpenSSL-Win64/lib/libcrypto.dylib" -DOPENSSL_SSL_LIBRARY="C:/Program Files/OpenSSL-Win64/lib/libssl.dylib" -DCRYPTO_BACKEND=OpenSSL -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=on -DBUILD_EXAMPLES=off -DBUILD_TESTING=off ..
+        cmake --build . --config "Release" --target install
 
     # install QT   
     - name: install QT
@@ -145,7 +159,7 @@ jobs:
         python rdm\build\utils\set_version.py ${{ env.VERSION }} > rdm\src\version.h
         cd rdm\src
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
-        qmake rdm.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
+        qmake rdm.pro CONFIG-=debug CONFIG+=sentry "VCPKG_PATH=c:\vcpkg\installed\x64-windows" "VERSION=${{ env.VERSION }}"
         nmake
 
     # 缺少python3.dll
@@ -196,11 +210,20 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       with:
-        repository: uglide/RedisDesktopManager
+        repository: w-a-n-g-s-h-u-n/RedisDesktopManager
         path: rdm
         submodules: 'recursive'
         ref: ${{ env.RDM_REF }}
 
+    - name: build libssh2
+      run: |
+        brew install openssl@1.1
+        cd rdm/3rdparty/qredisclient/3rdparty/qsshclient/3rdparty/libssh2
+        mkdir bin
+        cd bin
+        cmake -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1/include -DOPENSSL_CRYPTO_LIBRARY=/usr/local/opt/openssl@1.1/lib/libcrypto.dylib -DOPENSSL_SSL_LIBRARY=/usr/local/opt/openssl@1.1/lib/libssl.dylib ..
+        cmake --build .
+        
     - name: build lz4
       run: |
         cd rdm/3rdparty/lz4/build/cmake
