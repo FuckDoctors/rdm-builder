@@ -19,10 +19,11 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2021.8
-  VERSION: 2021.8.0
+  RDM_REF: 2021.9
+  VERSION: 2021.9.0
   PY_LIB_VERSION: 38
   PYTHON_EMBEDDED_VERSION: 3.8.10
+  CMAKE_VS: Visual Studio 16 2019
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -99,6 +100,25 @@ jobs:
         cd rdm/3rdparty/lz4/build/cmake
         cmake -G "Visual Studio 16 2019" -A x64 -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON -B .
         cmake --build . --config "Release"
+
+    - name: build zstd
+      run: |
+        cd rdm/3rdparty/zstd/build/cmake
+        cmake -G "${{ env.CMAKE_VS }}" -A x64 -B .
+        cmake --build . --config Release
+        
+    - name: build snappy
+      run: |
+        cd rdm/3rdparty/snappy
+        cmake -G "${{ env.CMAKE_VS }}" -A x64 -B .
+        cmake --build . --config Release
+        
+    - name: build brotli
+      run: |
+        cd rdm/3rdparty/brotli
+        cmake -G "${{ env.CMAKE_VS }}" -A x64 -B .
+        cmake -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config Release
 
 #    # install python3  
 #    - name: install Python3
@@ -206,6 +226,22 @@ jobs:
         cd rdm/3rdparty/lz4/build/cmake
         cmake -DLZ4_BUNDLED_MODE=ON -DBUILD_SHARED_LIBS=ON
         make -s -j 8
+
+    - name: build zstd
+      run: |
+        cd rdm/3rdparty/zstd/build/cmake
+        cmake . && make
+        
+    - name: build snappy
+      run: |
+        cd rdm/3rdparty/snappy
+        cmake . && make
+        
+    - name: build brotli
+      run: |
+        cd rdm/3rdparty/brotli
+        cmake -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config Release
 
     # install QT   
     - name: install QT
