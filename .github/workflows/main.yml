@@ -19,8 +19,8 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: 2021.9
-  VERSION: 2021.9.0
+  RDM_REF: 2021.10
+  VERSION: 2021.10.0
   PY_LIB_VERSION: 38
   PYTHON_EMBEDDED_VERSION: 3.8.10
   CMAKE_VS: Visual Studio 16 2019
@@ -54,17 +54,6 @@ jobs:
 
   build_on_windows:
     needs: create_release
-    strategy:
-      matrix:
-        #configuration: [Debug, Release]
-        configuration: [Release]
-        qt_target: [Desktop]
-        qt_arch: [win64_msvc2019_64]
-        # 额外设置msvc_arch
-        include:
-          - qt_arch: win64_msvc2019_64
-            msvc_arch: x64
-
     runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -160,7 +149,7 @@ jobs:
     - name: build
       shell: cmd
       env:
-        vc_arch: ${{ matrix.msvc_arch }}
+        vc_arch: x64
       run: |
         python rdm\build\utils\set_version.py ${{ env.VERSION }} > rdm\src\version.h
         cd rdm\src
