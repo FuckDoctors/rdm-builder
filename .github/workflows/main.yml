@@ -22,8 +22,8 @@ on:
     - cron: '0 22 * * *' # Runs at 22:00 UTC every day
 
 env:
-  RDM_REF: 2021
-  VERSION: 2021.99.0
+  RDM_REF: 2022
+  VERSION: 2022.99.0
   PY_LIB_VERSION: 38
   PYTHON_EMBEDDED_VERSION: 3.8.10
   CMAKE_VS: Visual Studio 16 2019
@@ -147,13 +147,13 @@ jobs:
         forfiles /p "." /s /m *.egg-info /c "cmd /c if @isdir==TRUE rd /s /q @file 2>nul" 2>nul | exit /b 0
 
     # https://doc.qt.io/qt-5/linguist-manager.html
-    # lupdate rdm.pro
+    # lupdate resp.pro
     - name: translations
       shell: cmd
       run: |
         cd rdm\src
-        lupdate rdm.pro
-        lrelease -verbose rdm.pro
+        lupdate resp.pro
+        lrelease -verbose resp.pro
         xcopy resources\translations\*.qm ..\build\windows\installer\resources\translations /s /i
 
     # Runs a single command using the runners shell
@@ -165,7 +165,7 @@ jobs:
         python rdm\build\utils\set_version.py ${{ env.VERSION }} > rdm\src\version.h
         cd rdm\src
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
-        qmake rdm.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
+        qmake resp.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
         nmake
 
     # 缺少python3.dll
@@ -182,17 +182,17 @@ jobs:
 
     # windeployqt
     # https://doc.qt.io/qt-5/windows-deployment.html
-    # windeployqt.exe --force --qmldir ${{ env.QML2_IMPORT_PATH }} rdm.exe
+    # windeployqt.exe --force --qmldir ${{ env.QML2_IMPORT_PATH }} resp.exe
     - name: package
-      id: pacage
+      id: package
       shell: cmd
       run: |
         cd rdm
-        copy /y bin\windows\release\rdm.exe build\windows\installer\resources\rdm.exe
-        copy /y bin\windows\release\rdm.exp build\windows\installer\resources\rdm.exp
-        copy /y bin\windows\release\rdm.lib build\windows\installer\resources\rdm.lib
+        copy /y bin\windows\release\resp.exe build\windows\installer\resources\resp.exe
+        copy /y bin\windows\release\resp.exp build\windows\installer\resources\resp.exp
+        copy /y bin\windows\release\resp.lib build\windows\installer\resources\resp.lib
         cd build\windows\installer\resources
-        windeployqt.exe --no-angle --no-opengl-sw --no-compiler-runtime --no-translations --release --force --qmldir ../../../../src/qml rdm.exe
+        windeployqt.exe --no-angle --no-opengl-sw --no-compiler-runtime --no-translations --release --force --qmldir ../../../../src/qml resp.exe
         makensis.exe /V1 /DVERSION=${{ env.VERSION }} ../installer.nsi
 
     - name: Upload Release Asset
@@ -203,8 +203,8 @@ jobs:
       with:
         # upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: rdm/build/windows/installer/rdm-${{ env.VERSION }}.exe
-        asset_name: rdm-${{ env.VERSION }}.exe
+        asset_path: rdm/build/windows/installer/resp-${{ env.VERSION }}.exe
+        asset_name: resp-${{ env.VERSION }}.exe
         asset_content_type: application/vnd.microsoft.portable-executable
 
   build_on_osx:
@@ -293,8 +293,8 @@ jobs:
     - name: release translations
       run: |
         cd rdm/src
-        lupdate rdm.pro
-        lrelease -verbose rdm.pro
+        lupdate resp.pro
+        lrelease -verbose resp.pro
 
     # brew install tree && tree -a
     # 去掉initUpdater不然报Please download new version of Redis Desktop Manager，不能使用
@@ -308,23 +308,23 @@ jobs:
       run: |
         python ./rdm/build/utils/set_version.py ${{ env.VERSION }} > ./rdm/src/version.h
         cd rdm/src
-        qmake rdm.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
+        qmake resp.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
         make -s -j 8
 
     - name: copy translations
       run: |
         cd rdm/src
-        mkdir ../bin/osx/release/RDM.app/Contents/translations
-        cp -f ./resources/translations/*.qm ../bin/osx/release/RDM.app/Contents/translations
+        mkdir ../bin/osx/release/RESP.app/Contents/translations
+        cp -f ./resources/translations/*.qm ../bin/osx/release/RESP.app/Contents/translations
 
     - name: package
       id: package
       run: |
         cd rdm/bin/osx/release
         zip -q -r release.zip .
-        cp -Rf py ./RDM.app/Contents/Resources/
-        otool -L ./RDM.app/Contents/MacOS/RDM
-        macdeployqt ./RDM.app -qmldir=../../../src/qml -always-overwrite -dmg
+        cp -Rf py ./RESP.app/Contents/Resources/
+        otool -L ./RESP.app/Contents/MacOS/RESP
+        macdeployqt ./RESP.app -qmldir=../../../src/qml -always-overwrite -dmg
 
     - name: Upload Release Asset
       id: upload-release-asset 
@@ -333,6 +333,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: rdm/bin/osx/release/RDM.dmg
-        asset_name: RDM.dmg
+        asset_path: rdm/bin/osx/release/RESP.dmg
+        asset_name: RESP.dmg
         asset_content_type: application/dmg
