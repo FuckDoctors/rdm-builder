@@ -306,7 +306,6 @@ jobs:
     - name: build
       id: build
       run: |
-        python ./rdm/build/utils/set_version.py ${{ env.VERSION }} > ./rdm/src/version.h
         cd rdm/src
         qmake resp.pro CONFIG-=debug "VERSION=${{ env.VERSION }}"
         make -s -j 8
