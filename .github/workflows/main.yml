@@ -65,7 +65,7 @@ jobs:
 
   build_on_windows:
     needs: create_release
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
