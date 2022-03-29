@@ -257,6 +257,7 @@ jobs:
       with: 
         version: '5.15.1'
         modules: 'qtcharts'
+        setup-python: 'false'
     
     - name: copy info.plist
       run: |
