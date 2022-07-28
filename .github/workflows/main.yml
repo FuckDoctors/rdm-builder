@@ -84,10 +84,10 @@ jobs:
         version: '5.15.1'
         modules: 'qtcharts'
 
-    - name : fix compilation
-      run: |
-        cd rdm/3rdparty/qredisclient/3rdparty/hiredis
-        git apply ../hiredis-win.patch
+#     - name : fix compilation
+#       run: |
+#         cd rdm/3rdparty/qredisclient/3rdparty/hiredis
+#         git apply ../hiredis-win.patch
 
     - name: install zlib
       run: |
