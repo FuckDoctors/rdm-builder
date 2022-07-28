@@ -19,8 +19,8 @@ on:
       - 'LICENSE'
 
 env:
-  RDM_REF: '2022.3'
-  VERSION: 2022.3.0
+  RDM_REF: '2022.4.2'
+  VERSION: 2022.4.2
   PY_LIB_VERSION: 38
   PYTHON_EMBEDDED_VERSION: 3.8.10
   CMAKE_VS: Visual Studio 16 2019
@@ -73,10 +73,10 @@ jobs:
         version: '5.15.1'
         modules: 'qtcharts'
 
-    - name : fix compilation
-      run: |
-        cd rdm/3rdparty/qredisclient/3rdparty/hiredis
-        git apply ../hiredis-win.patch
+#     - name : fix compilation
+#       run: |
+#         cd rdm/3rdparty/qredisclient/3rdparty/hiredis
+#         git apply ../hiredis-win.patch
 
     - name: install zlib
       run: |
