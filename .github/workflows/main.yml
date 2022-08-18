@@ -248,6 +248,7 @@ jobs:
       run: |
         brew unlink python@3.10
         brew reinstall python@3.9
+        brew unlink python@3.9
         brew link --overwrite python@3.9
 
     # install QT   
