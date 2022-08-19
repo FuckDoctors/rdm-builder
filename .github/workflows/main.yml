@@ -244,12 +244,12 @@ jobs:
         cmake -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
 
-    - name: setup python
-      run: |
-        brew unlink python@3.10
-        brew reinstall python@3.9
-        brew unlink python@3.9
-        brew link --overwrite python@3.9
+#     - name: setup python
+#       run: |
+#         brew unlink python@3.10
+#         brew reinstall python@3.9
+#         brew unlink python@3.9
+#         brew link --overwrite python@3.9
 
     # install python3  
     - name: install Python3
@@ -269,7 +269,14 @@ jobs:
       run: |
         cd rdm
         cd ./src && cp ./resources/Info.plist.sample ./resources/Info.plist
-    
+
+    - name: setup python
+      run: |
+        brew unlink python@3.10
+        brew reinstall python@3.9
+        brew unlink python@3.9
+        brew link --overwrite python@3.9
+
 #     - name: setup python
 #       run: |
 #         brew unlink python@3.10
