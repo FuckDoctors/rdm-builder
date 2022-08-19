@@ -253,11 +253,11 @@ jobs:
 
     # install QT   
     - name: install QT
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with: 
         version: '5.15.1'
         modules: 'qtcharts'
-        setup-python: 'false'
+        setup-python: 'true'
     
     - name: copy info.plist
       run: |
