@@ -251,13 +251,19 @@ jobs:
         brew unlink python@3.9
         brew link --overwrite python@3.9
 
+    # install python3  
+    - name: install Python3
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
     # install QT   
     - name: install QT
       uses: jurplel/install-qt-action@v3
       with: 
         version: '5.15.1'
         modules: 'qtcharts'
-        setup-python: 'true'
+        setup-python: 'false'
     
     - name: copy info.plist
       run: |
