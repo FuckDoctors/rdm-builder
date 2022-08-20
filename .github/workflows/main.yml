@@ -247,7 +247,6 @@ jobs:
     - name: setup python
       run: |
         brew unlink python@3.10
-        brew uninstall python@3.10
         brew reinstall python@3.9
         brew link --overwrite python@3.9
         brew link python3
