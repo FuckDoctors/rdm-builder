@@ -241,6 +241,7 @@ jobs:
     - name: build snappy
       run: |
         cd rdm/3rdparty/snappy
+        git submodule update --init
         cmake . && make
 
     - name: build brotli
