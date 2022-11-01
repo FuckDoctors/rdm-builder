@@ -223,6 +223,7 @@ jobs:
 
     - name: update submodules
       run: |
+        cd rdm
         git submodule update --remote
 
     - name: build lz4
