@@ -221,6 +221,10 @@ jobs:
         submodules: 'recursive'
         ref: ${{ env.RDM_REF }}
 
+    - name: update submodules
+      run: |
+        git submodule update --remote
+
     - name: build lz4
       run: |
         cd rdm/3rdparty/lz4/build/cmake
@@ -236,8 +240,6 @@ jobs:
     - name: build snappy
       run: |
         cd rdm/3rdparty/snappy
-        git fetch
-        git merge origin/master
         cmake . && make
 
     - name: build brotli
