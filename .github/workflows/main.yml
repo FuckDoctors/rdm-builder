@@ -236,6 +236,8 @@ jobs:
     - name: build snappy
       run: |
         cd rdm/3rdparty/snappy
+        git fetch
+        git merge origin/master
         cmake . && make
 
     - name: build brotli
