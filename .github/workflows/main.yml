@@ -250,12 +250,13 @@ jobs:
         cmake -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
 
-    - name: setup python
-      run: |
-        brew unlink python@3.10
-        brew reinstall python@3.9
-        brew link --overwrite python@3.9
-        brew link python3
+#     - name: setup python
+#       run: |
+#         brew unlink python@3.11
+#         brew unlink python@3.10
+#         brew reinstall python@3.9
+#         brew link --overwrite python@3.9
+#         brew link python3
 
     # install QT   
     - name: install QT
