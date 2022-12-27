@@ -247,7 +247,7 @@ jobs:
     - name: build brotli
       run: |
         cd rdm/3rdparty/brotli
-        cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr
+        cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
         cmake --build . --config Release --target install
 
 #     - name: setup python
