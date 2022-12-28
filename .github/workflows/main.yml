@@ -221,10 +221,10 @@ jobs:
         submodules: 'recursive'
         ref: ${{ env.RDM_REF }}
 
-    - name: update submodules
-      run: |
-        cd rdm
-        git submodule update --remote
+#     - name: update submodules
+#       run: |
+#         cd rdm
+#         git submodule update --remote
 
     - name: build lz4
       run: |
@@ -247,8 +247,7 @@ jobs:
     - name: build brotli
       run: |
         cd rdm/3rdparty/brotli
-        git submodule update --remote
-        cmake -DCMAKE_BUILD_TYPE=Release
+        cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
         cmake --build . --config Release --target install
 
 #     - name: setup python
