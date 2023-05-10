@@ -330,6 +330,11 @@ jobs:
         cd rdm/bin/osx/release
         zip -q -r release.zip .
         cp -Rf py ./RESP.app/Contents/Resources/
+        python_version=$(python3 -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
+        echo ${python_version}
+        brew install python@${python_version}
+        cp -Rf /usr/local/Cellar/python@${python_version}/*/Frameworks/ ./RESP.app/Contents/Frameworks/
+        install_name_tool -change /Library/Frameworks/Python.framework/Versions/${python_version}/Python @rpath/Python.framework/Versions/${python_version}/Python ./RESP.app/Contents/MacOS/RESP
         otool -L ./RESP.app/Contents/MacOS/RESP
         macdeployqt ./RESP.app -qmldir=../../../src/qml -always-overwrite -dmg
 
